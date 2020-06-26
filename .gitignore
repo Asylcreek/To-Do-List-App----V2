@@ -1,0 +1,4 @@
+.DS_Store
+node_modules/
+todolist-v2-starting-files/
+*.env
