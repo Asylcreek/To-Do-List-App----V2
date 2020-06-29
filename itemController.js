@@ -1,21 +1,64 @@
 const Item = require('./itemModel');
 
-exports.createItem = async(name) => {
-    try {
-        const newItem = await Item.create({ name });
+//Function that returns the current date
+const getCurrentDate = () => {
+    const today = new Date();
 
-        console.log(newItem);
+    const options = {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+    };
+
+    return today.toLocaleDateString('en-US', options);
+};
+
+exports.createItem = async(req, res) => {
+    try {
+        // const newItem = await Item.create({ name });
+        const newItem = req.body.newItem;
+
+        if (newItem) {
+            if (req.body.list === 'Work List') {
+                workItems.push(newItem);
+
+                res.redirect('/work');
+            } else {
+                // items.push(item);
+                await Item.create({ name: newItem });
+
+                res.redirect('/');
+            }
+        } else {
+            res.redirect('/');
+        }
     } catch (err) {
         console.log(err);
     }
     // next();
 };
 
-exports.getAllItems = async() => {
+exports.getAllItems = async(req, res) => {
     try {
-        const items = await Item.find();
+        let items = await Item.find();
+        const date = getCurrentDate();
 
-        console.log(items);
+        if (items.length <= 3) {
+            items = await Item.find({ placeholder: true });
+        } else {
+            items = await Item.find({ placeholder: false });
+        }
+
+        res.render('list', { listTitle: date, items });
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+exports.deleteAllItems = async() => {
+    try {
+        await Item.deleteMany();
+        console.log('Success');
     } catch (err) {
         console.log(err);
     }

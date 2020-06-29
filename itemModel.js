@@ -5,6 +5,10 @@ const itemSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    placeholder: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const Item = mongoose.model('Item', itemSchema);

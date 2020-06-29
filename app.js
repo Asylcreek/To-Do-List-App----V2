@@ -16,20 +16,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 // itemController.createItem('Cook food');
-itemController.getAllItems();
-
-//Function that returns the current date
-const getCurrentDate = () => {
-    const today = new Date();
-
-    const options = {
-        weekday: 'long',
-        day: 'numeric',
-        month: 'long',
-    };
-
-    return today.toLocaleDateString('en-US', options);
-};
+// ;
 
 //Function to add new items
 const addNewItems = (req, res) => {
@@ -47,10 +34,7 @@ const addNewItems = (req, res) => {
 };
 
 //GET: Home route handler
-app.get('/', (req, res) => {
-    const date = getCurrentDate();
-    res.render('list', { listTitle: date, items });
-});
+app.get('/', itemController.getAllItems);
 
 //GET: Work route handler
 app.get('/work', (req, res) => {
@@ -58,6 +42,6 @@ app.get('/work', (req, res) => {
 });
 
 //POST: Home route handler
-app.post('/', addNewItems);
+app.post('/', itemController.createItem);
 
 module.exports = app;
