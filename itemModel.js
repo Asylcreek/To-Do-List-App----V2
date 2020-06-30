@@ -9,6 +9,11 @@ const itemSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
+    listName: {
+        type: String,
+        default: 'home',
+        unique: true,
+    },
 });
 
 const Item = mongoose.model('Item', itemSchema);

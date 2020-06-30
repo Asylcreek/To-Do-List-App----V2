@@ -1,4 +1,5 @@
 const Item = require('./itemModel');
+const _ = require('lodash');
 
 //Function that returns the current date
 const getCurrentDate = () => {
@@ -13,43 +14,80 @@ const getCurrentDate = () => {
     return today.toLocaleDateString('en-US', options);
 };
 
+exports.getAllItems = async(req, res) => {
+    try {
+        const date = getCurrentDate();
+
+        //Get the listName from the request
+        let listName = req.params.listName;
+
+        // Check if listName exists
+        if (!listName) listName = 'home';
+
+        //Capitalize the first letter of listName
+        listName = _.capitalize(listName);
+
+        //Find the items for a particular list
+        let items = await Item.find({ listName });
+
+        //Check if the items are more than zero
+        if (items.length === 0) {
+            items = await Item.find({ placeholder: true });
+        }
+
+        res.render('list', { listName, date, items });
+    } catch (err) {
+        console.log(err);
+    }
+};
+
 exports.createItem = async(req, res) => {
     try {
-        // const newItem = await Item.create({ name });
+        //Get the item name and listName from the request
         const newItem = req.body.newItem;
+        let listName = req.params.listName;
 
+        //Check if listName exists
+        if (!listName) listName = 'home';
+
+        //Capitalize the first letter of listName
+        listName = _.capitalize(listName);
+
+        //Check if newItem exists
         if (newItem) {
-            if (req.body.list === 'Work List') {
-                workItems.push(newItem);
+            await Item.create({ name: newItem, listName });
 
-                res.redirect('/work');
-            } else {
-                // items.push(item);
-                await Item.create({ name: newItem });
-
+            //Select the correct redirect route
+            if (listName === 'Home') {
                 res.redirect('/');
+            } else {
+                res.redirect(`/${listName}`);
             }
-        } else {
-            res.redirect('/');
         }
     } catch (err) {
         console.log(err);
     }
-    // next();
 };
 
-exports.getAllItems = async(req, res) => {
+exports.deleteItem = async(req, res) => {
     try {
-        let items = await Item.find();
-        const date = getCurrentDate();
+        //Get the id of the item to delete
+        const checkedItemId = req.body.checkbox;
 
-        if (items.length <= 3) {
-            items = await Item.find({ placeholder: true });
+        //Use that id to find its listName
+        const item = await Item.findById(checkedItemId);
+        const listName = item.listName;
+        console.log(listName);
+
+        //Delete the document
+        await Item.findByIdAndDelete(checkedItemId);
+
+        //Select the correct route
+        if (listName === 'Home') {
+            res.redirect('/');
         } else {
-            items = await Item.find({ placeholder: false });
+            res.redirect(`/${listName}`);
         }
-
-        res.render('list', { listTitle: date, items });
     } catch (err) {
         console.log(err);
     }
@@ -58,6 +96,15 @@ exports.getAllItems = async(req, res) => {
 exports.deleteAllItems = async() => {
     try {
         await Item.deleteMany();
+        console.log('Success');
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+exports.updateItem = async(id) => {
+    try {
+        await Item.findByIdAndUpdate(id, { listName: 'home' });
         console.log('Success');
     } catch (err) {
         console.log(err);

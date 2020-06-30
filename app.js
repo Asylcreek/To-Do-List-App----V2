@@ -1,7 +1,6 @@
 //Require necessary modules
 const express = require('express');
 const bodyParser = require('body-parser');
-// const mongoose = require('mongoose');
 
 const itemController = require('./itemController');
 
@@ -15,33 +14,21 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-// itemController.createItem('Cook food');
-// ;
-
-//Function to add new items
-const addNewItems = (req, res) => {
-    const item = req.body.newItem;
-
-    if (req.body.list === 'Work List') {
-        workItems.push(item);
-
-        res.redirect('/work');
-    } else {
-        items.push(item);
-
-        res.redirect('/');
-    }
-};
-
 //GET: Home route handler
 app.get('/', itemController.getAllItems);
 
-//GET: Work route handler
-app.get('/work', (req, res) => {
-    res.render('list', { listTitle: 'Work List', items: workItems });
-});
-
 //POST: Home route handler
 app.post('/', itemController.createItem);
+
+//GET: Custom list route handler
+app.get('/:listName', itemController.getAllItems);
+
+//POST: Custom list route handler
+app.post('/:listName', itemController.createItem);
+
+//POST: Delete item route handler
+app.post('/delete', itemController.deleteItem);
+
+// itemController.updateItem('5efa0a33de8287310428a8df');
 
 module.exports = app;
