@@ -20,14 +20,14 @@ app.get('/', itemController.getAllItems);
 //POST: Home route handler
 app.post('/', itemController.createItem);
 
+//POST: Delete item route handler
+app.post('/delete', itemController.deleteItem);
+
 //GET: Custom list route handler
 app.get('/:listName', itemController.getAllItems);
 
 //POST: Custom list route handler
 app.post('/:listName', itemController.createItem);
-
-//POST: Delete item route handler
-app.post('/delete', itemController.deleteItem);
 
 // itemController.updateItem('5efa0a33de8287310428a8df');
 

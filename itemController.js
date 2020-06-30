@@ -77,7 +77,6 @@ exports.deleteItem = async(req, res) => {
         //Use that id to find its listName
         const item = await Item.findById(checkedItemId);
         const listName = item.listName;
-        console.log(listName);
 
         //Delete the document
         await Item.findByIdAndDelete(checkedItemId);
