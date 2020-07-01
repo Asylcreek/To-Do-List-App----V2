@@ -14,6 +14,12 @@ const itemSchema = new mongoose.Schema({
         default: 'home',
         unique: true,
     },
+    dateCreated: Date,
+});
+
+itemSchema.pre('save', function(next) {
+    this.dateCreated = Date.now();
+    next();
 });
 
 const Item = mongoose.model('Item', itemSchema);
