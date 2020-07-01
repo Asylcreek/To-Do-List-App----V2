@@ -56,13 +56,13 @@ exports.createItem = async(req, res) => {
         //Check if newItem exists
         if (newItem) {
             await Item.create({ name: newItem, listName });
+        }
 
-            //Select the correct redirect route
-            if (listName === 'Home') {
-                res.redirect('/');
-            } else {
-                res.redirect(`/${listName}`);
-            }
+        //Select the correct redirect route
+        if (listName === 'Home') {
+            res.redirect('/');
+        } else {
+            res.redirect(`/${listName}`);
         }
     } catch (err) {
         console.log(err);
