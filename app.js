@@ -21,7 +21,7 @@ app.get('/', itemController.getAllItems);
 app.post('/', itemController.createItem);
 
 //POST: Delete item route handler
-app.post('/delete', itemController.deleteItem);
+app.post('/delete/:listName', itemController.deleteItem);
 
 //GET: Custom list route handler
 app.get('/:listName', itemController.getAllItems);

@@ -71,15 +71,17 @@ exports.createItem = async(req, res) => {
 
 exports.deleteItem = async(req, res) => {
     try {
+        //Get the listName from the request
+        const listName = req.params.listName;
+
         //Get the id of the item to delete
         const checkedItemId = req.body.checkbox;
 
-        //Use that id to find its listName
+        //Check if the item is not a placeholder
         const item = await Item.findById(checkedItemId);
-        const listName = item.listName;
-
-        //Delete the document
-        await Item.findByIdAndDelete(checkedItemId);
+        if (item.placeholder !== true) {
+            await Item.findByIdAndDelete(checkedItemId);
+        }
 
         //Select the correct route
         if (listName === 'Home') {
@@ -87,24 +89,6 @@ exports.deleteItem = async(req, res) => {
         } else {
             res.redirect(`/${listName}`);
         }
-    } catch (err) {
-        console.log(err);
-    }
-};
-
-exports.deleteAllItems = async() => {
-    try {
-        await Item.deleteMany();
-        console.log('Success');
-    } catch (err) {
-        console.log(err);
-    }
-};
-
-exports.updateItem = async(id) => {
-    try {
-        await Item.findByIdAndUpdate(id, { listName: 'home' });
-        console.log('Success');
     } catch (err) {
         console.log(err);
     }
